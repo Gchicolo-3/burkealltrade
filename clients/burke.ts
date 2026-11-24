@@ -11,16 +11,19 @@ const burke: ClientConfig = {
     name: 'Burke AllTrade Services',
     owner: 'Mike Burke',
     ownerFirst: 'Mike',
+    // CONFIRM WITH GEORGE: phone, email and review link not yet verified with Mike.
     phone: '201-749-1531',
     email: 'mike@burkealltradehandyman.com',
     serviceArea: 'Bergen County, NJ',
-    reviewUrl: '',
+    reviewUrl: '', // CONFIRM: Mike's Google review link
     paymentInstructions: 'Zelle, Venmo, check, or cash all work.',
   },
   pricing: {
-    hourlyRate: 95,
-    minimumCharge: 190,
-    minimumLabel: 'Minimum service call (covers first 2 hours on site)',
+    // Mike prices each job on its own, no flat minimum (Nov 18 interview).
+    mode: 'per_job',
+    hourlyRate: null, // optional, set in Settings if he wants hours x rate to fill blanks
+    minimumCharge: 0,
+    minimumLabel: 'Minimum service call',
     tripCharge: 0,
     materialsMarkupPct: 15,
     roundTo: 5,
@@ -51,6 +54,8 @@ const burke: ClientConfig = {
       'kindly',
       'leverage',
     ],
+    // PLACEHOLDERS: not Mike's real texts. Replace with 2 or 3 texts he has actually sent.
+    examplesArePlaceholders: true,
     examples: [
       'Hey Linda, Mike here. Just wanted to make sure the vanity is holding up good. Anything else on the list, let me know.',
       'Hey Tom, thanks again for having me out. If you know anyone who needs a hand around the house I would really appreciate the referral. - Mike',

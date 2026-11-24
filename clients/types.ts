@@ -26,11 +26,15 @@ export interface VoiceConfig {
   doSay: string[];
   neverSay: string[];
   examples: string[]; // real or approved sample texts, the AI mimics these
+  examplesArePlaceholders?: boolean; // true until real texts from the owner replace them
 }
 
 export interface PricingConfig {
-  hourlyRate: number;
-  minimumCharge: number; // the floor for any single visit
+  // 'per_job': the owner types a price for each line (default, how Mike really quotes).
+  // 'hourly': price = hours x hourlyRate.
+  mode: 'per_job' | 'hourly';
+  hourlyRate: number | null; // optional setting, no assumed value
+  minimumCharge: number; // floor for a single visit, 0 = no minimum
   minimumLabel: string; // line item label when the floor kicks in
   tripCharge: number; // 0 to disable
   materialsMarkupPct: number; // added to materials estimates

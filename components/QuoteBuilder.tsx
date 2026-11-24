@@ -210,7 +210,7 @@ export default function QuoteBuilder({
           <section className="space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="label mb-0">Line items</h2>
-              <span className="text-xs muted">${pricing.hourlyRate}/hr · materials +{pricing.materialsMarkupPct}%</span>
+              <span className="text-xs muted">{pricing.mode === 'hourly' && pricing.hourlyRate ? `$${pricing.hourlyRate}/hr` : 'Your price per line'} · materials +{pricing.materialsMarkupPct}%</span>
             </div>
             {q.lines.length === 0 && items.length > 0 && <p className="text-sm muted">Add a description to price it.</p>}
             {items.map((it, i) => (
@@ -219,7 +219,12 @@ export default function QuoteBuilder({
                   <input className="input" value={it.description} onChange={(e) => setItem(i, { description: e.target.value })} placeholder="What" />
                   <button className="btn-ghost btn-sm" aria-label="Remove" onClick={() => setItems((c) => c.filter((_, j) => j !== i))}>×</button>
                 </div>
-                <div className="grid grid-cols-3 items-end gap-2">
+                <div className={`grid ${pricing.mode === 'hourly' ? 'grid-cols-3' : 'grid-cols-4'} items-end gap-2`}>
+                  {pricing.mode !== 'hourly' && (
+                    <label className="text-xs font-semibold muted">Price $
+                      <input className="input mt-1" type="number" inputMode="decimal" step="5" min="0" value={it.price ?? ''} placeholder="0" onChange={(e) => setItem(i, { price: e.target.value === '' ? null : Number(e.target.value) })} />
+                    </label>
+                  )}
                   <label className="text-xs font-semibold muted">Hours
                     <input className="input mt-1" type="number" inputMode="decimal" step="0.25" min="0" value={it.hours} onChange={(e) => setItem(i, { hours: Number(e.target.value) })} />
                   </label>

@@ -20,6 +20,7 @@ export interface LineItem {
   description: string;
   hours: number;
   materials: number;
+  price?: number | null; // labor price for this line, set by the owner (per job pricing)
 }
 
 export interface Job {

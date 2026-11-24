@@ -133,8 +133,8 @@ export async function buildQuote(
     'From the photos and the owner note, break the work into clear line items a homeowner understands.',
     'For each line item estimate realistic on-site labor hours for one experienced handyman (quarter hour steps) and materials cost in dollars at typical Home Depot pricing. Use 0 materials if the customer supplies them or none are needed.',
     'Do NOT compute prices, totals, or rates. The app does the math.',
-    `Context only: his rate is $${p.hourlyRate}/hr and every visit has a $${p.minimumCharge} minimum.`,
-    `If the job looks small (under ${Math.round(p.minimumCharge / p.hourlyRate)} hours), suggest 2 to 4 quick add-on tasks that fit this house and would use the leftover minimum time. Pick from or build on: ${p.bundleSuggestions.join('; ')}.`,
+    'He prices each job on its own. Your hours are a guide for him, not the price.',
+    `If the job looks small, you may suggest 1 to 3 quick add-on tasks that fit this house. Pick from or build on: ${p.bundleSuggestions.join('; ')}.`,
     'List any assumptions (e.g. customer supplies fixture) and up to 3 questions he should confirm before the job.',
     'Write plainly. No em dashes.',
   ].join('\n');

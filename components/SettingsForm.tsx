@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { saveSettings } from '@/app/actions';
 
-interface Init { hourlyRate: number; minimumCharge: number; reviewUrl: string; extraVoiceExamples: string[] }
+interface Init { hourlyRate: number | null; minimumCharge: number; reviewUrl: string; extraVoiceExamples: string[] }
 
 export default function SettingsForm({ initial, builtInExamples }: { initial: Init; builtInExamples: string[] }) {
   const [f, setF] = useState(initial);
@@ -23,14 +23,14 @@ export default function SettingsForm({ initial, builtInExamples }: { initial: In
       <section className="card space-y-3 p-4">
         <h2 className="font-bold">Pricing</h2>
         <div className="grid grid-cols-2 gap-2">
-          <label className="text-sm font-semibold muted">Hourly rate
-            <input className="input mt-1" type="number" inputMode="decimal" value={f.hourlyRate} onChange={(e) => setF({ ...f, hourlyRate: Number(e.target.value) })} />
+          <label className="text-sm font-semibold muted">Hourly rate (optional)
+            <input className="input mt-1" type="number" inputMode="decimal" placeholder="Not set" value={f.hourlyRate ?? ''} onChange={(e) => setF({ ...f, hourlyRate: e.target.value === '' ? null : Number(e.target.value) })} />
           </label>
           <label className="text-sm font-semibold muted">Minimum per visit
             <input className="input mt-1" type="number" inputMode="decimal" value={f.minimumCharge} onChange={(e) => setF({ ...f, minimumCharge: Number(e.target.value) })} />
           </label>
         </div>
-        <p className="text-xs muted">Every quote is raised to the minimum so small jobs stay worth the drive.</p>
+        <p className="text-xs muted">You price each job yourself. The hourly rate only fills in a line you leave blank. Leave the minimum at 0 for no minimum.</p>
       </section>
 
       <section className="card space-y-2 p-4">

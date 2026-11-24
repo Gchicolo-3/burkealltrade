@@ -3,7 +3,7 @@ import { db, dbConfigured } from './db';
 
 // Owner-editable overrides saved in the settings row, layered on the client config file.
 export interface SettingsOverrides {
-  hourlyRate?: number;
+  hourlyRate?: number | null;
   minimumCharge?: number;
   reviewUrl?: string;
   extraVoiceExamples?: string[];

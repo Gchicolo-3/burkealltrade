@@ -16,19 +16,30 @@ const cfg = getClient();
 const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString();
 
 async function main() {
-  // pricing + minimum
-  const small = priceQuote([{ description: 'Replace faucet cartridge', hours: 0.75, materials: 20 }], cfg.pricing);
-  assert.equal(small.underMinimum, true);
-  assert.equal(small.total, cfg.pricing.minimumCharge);
-  const big = priceQuote([{ description: 'Hang 3 doors', hours: 4, materials: 0 }], cfg.pricing);
-  assert.equal(big.total, 380);
-  assert.equal(big.underMinimum, false);
-  console.log('pricing ok', small.lines[0].amount, small.minimumAdjustment, small.total);
+  // pricing: per job by default, no minimum
+  assert.equal(cfg.pricing.mode, 'per_job');
+  assert.equal(cfg.pricing.minimumCharge, 0);
+  assert.equal(cfg.pricing.hourlyRate, null);
+  const small = priceQuote([{ description: 'Replace faucet cartridge', hours: 0.75, materials: 20, price: 85 }], cfg.pricing);
+  assert.equal(small.underMinimum, false);
+  assert.equal(small.minimumAdjustment, 0);
+  assert.equal(small.total, 110); // 85 + 20 materials x 1.15 = 108, rounded up to 110
+  const blank = priceQuote([{ description: 'Hang 3 doors', hours: 4, materials: 0 }], cfg.pricing);
+  assert.equal(blank.total, 0, 'no rate set and no price typed: nothing is assumed');
+  const withRate = priceQuote([{ description: 'Hang 3 doors', hours: 4, materials: 0 }], { ...cfg.pricing, hourlyRate: 95 });
+  assert.equal(withRate.total, 380, 'optional rate fills a blank line');
+  const priceWins = priceQuote([{ description: 'Hang 3 doors', hours: 4, materials: 0, price: 300 }], { ...cfg.pricing, hourlyRate: 95 });
+  assert.equal(priceWins.total, 300, 'typed price beats hours x rate');
+  const hourly = priceQuote([{ description: 'x', hours: 2, materials: 0, price: 10 }], { ...cfg.pricing, mode: 'hourly', hourlyRate: 95 });
+  assert.equal(hourly.total, 190);
+  const floor = priceQuote([{ description: 'x', hours: 0, materials: 0, price: 50 }], { ...cfg.pricing, minimumCharge: 150 });
+  assert.equal(floor.total, 150, 'minimum still works if he ever sets one');
+  console.log('pricing ok', small.total, blank.total, withRate.total, priceWins.total);
 
   const em = quoteEmail(cfg, { customerName: 'Maria Lopez', title: 'Faucet repair', summary: 'Fix drip.', q: small, assumptions: ['Customer has the part'] });
-  assert.match(em.body, /Minimum service call/);
-  assert.match(em.body, /Total: \$190/);
-  assert.match(quoteSms(cfg, { customerName: 'Maria Lopez', title: 'Faucet repair', q: small }), /\$190 total/);
+  assert.doesNotMatch(em.body, /Minimum service call/);
+  assert.match(em.body, /Total: \$110/);
+  assert.match(quoteSms(cfg, { customerName: 'Maria Lopez', title: 'Faucet repair', q: small }), /\$110 total\. Covers/);
 
   // text helpers
   assert.equal(normalizePhone('(201) 555-0142'), '201-555-0142');

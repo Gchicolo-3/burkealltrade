@@ -190,7 +190,7 @@ export async function saveQuote(input: {
   const customerId = await ensureCustomer({ customerId: input.customerId, ...input.newCustomer });
   const [cust] = await s<Customer[]>`select * from customers where id = ${customerId}`;
   const q = priceQuote(input.items, cfg.pricing);
-  const items = q.lines.map(({ description, hours, materials }) => ({ description, hours, materials }));
+  const items = q.lines.map(({ description, hours, materials, price }) => ({ description, hours, materials, price }));
   const notes = [input.summary, input.notes].filter(Boolean).join('\n\n');
   let jobId = input.jobId;
   if (jobId) {
